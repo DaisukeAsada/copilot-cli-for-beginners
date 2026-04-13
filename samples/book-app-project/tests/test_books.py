@@ -51,3 +51,35 @@ def test_remove_book_invalid():
     collection = BookCollection()
     result = collection.remove_book("Nonexistent Book")
     assert result is False
+
+
+def test_list_by_year_returns_matching_books():
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    collection.add_book("Neuromancer", "William Gibson", 1984)
+    result = collection.list_by_year(1960, 1970)
+    assert len(result) == 1
+    assert result[0].title == "Dune"
+
+
+def test_list_by_year_inclusive_boundaries():
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    result = collection.list_by_year(1949, 1965)
+    titles = {b.title for b in result}
+    assert titles == {"1984", "Dune"}
+
+
+def test_list_by_year_no_matches():
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    result = collection.list_by_year(2000, 2024)
+    assert result == []
+
+
+def test_list_by_year_invalid_range_raises():
+    collection = BookCollection()
+    with pytest.raises(ValueError):
+        collection.list_by_year(2000, 1990)

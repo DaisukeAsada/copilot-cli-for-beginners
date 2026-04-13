@@ -8,12 +8,40 @@ def print_menu():
 
 
 def get_user_choice() -> str:
-    return input("Choose an option (1-5): ").strip()
+    while True:
+        choice = input("Choose an option (1-5): ").strip()
+        if not choice:
+            print("Please enter a number between 1 and 5.")
+            continue
+        if not choice.isdigit():
+            print(f"'{choice}' is not a valid number. Please enter a number between 1 and 5.")
+            continue
+        return choice
 
 
 def get_book_details():
-    title = input("Enter book title: ").strip()
-    author = input("Enter author: ").strip()
+    """Prompt the user to enter details for a new book.
+
+    Repeatedly prompts until a non-empty title and author are provided.
+    If the publication year is omitted or non-numeric, it defaults to 0.
+
+    Returns:
+        tuple[str, str, int]: A tuple of (title, author, year) where:
+            - title (str): The book's title. Never empty.
+            - author (str): The book's author. Never empty.
+            - year (int): The publication year, or 0 if not provided / invalid.
+    """
+    while True:
+        title = input("Enter book title: ").strip()
+        if title:
+            break
+        print("Title cannot be empty. Please enter a title.")
+
+    while True:
+        author = input("Enter author: ").strip()
+        if author:
+            break
+        print("Author cannot be empty. Please enter an author.")
 
     year_input = input("Enter publication year: ").strip()
     try:
