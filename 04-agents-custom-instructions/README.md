@@ -1,119 +1,119 @@
 ![Chapter 04: Agents and Custom Instructions](images/chapter-header.png)
 
-> **What if you could hire a Python code reviewer, testing expert, and security reviewer... all in one tool?**
+> **Python コードレビュアー、テスト専門家、セキュリティレビュアーを一つのツールで雇えるとしたら？**
 
-In Chapter 03, you mastered the essential workflows: code review, refactoring, debugging, test generation, and git integration. Those make you highly productive with GitHub Copilot CLI. Now, let's take it further.
+Chapter 03 では、コードレビュー・リファクタリング・デバッグ・テスト生成・git 連携といった重要なワークフローをマスターしました。これらを使いこなすことで、GitHub Copilot CLI での生産性は大幅に向上しています。では、さらに一歩進めてみましょう。
 
-So far, you've been using Copilot CLI as a general-purpose assistant. Agents let you give it a specific persona with built-in standards, like a code reviewer that enforces type hints and PEP 8, or a testing helper that writes pytest cases. You'll see how the same prompt gets noticeably better results when handled by an agent with targeted instructions.
+これまで Copilot CLI は汎用アシスタントとして使ってきました。エージェントを使うと、特定の専門家としての役割を与えることができます。たとえば、型ヒントと PEP 8 を徹底するコードレビュアーや、pytest のテストケースを書くテスト専門家などです。同じプロンプトでも、専門的な指示を持つエージェントに任せると、出力の質が格段に上がることを実感できるでしょう。
 
-## 🎯 Learning Objectives
+## 🎯 学習目標
 
-By the end of this chapter, you'll be able to:
+この章を終えると、以下のことができるようになります。
 
-- Use built-in agents: Plan (`/plan`), Code-review (`/review`), and understand automatic agents (Explore, Task)
-- Create specialized agents using agent files (`.agent.md`)
-- Use agents for domain-specific tasks
-- Switch between agents using `/agent` and `--agent`
-- Write custom instruction files for project-specific standards
+- 組み込みエージェント（Plan：`/plan`、Code-review：`/review`）の使い方と、自動エージェント（Explore・Task）の仕組みを理解する
+- エージェントファイル（`.agent.md`）を使って専門エージェントを作成する
+- 特定のドメインに特化したタスクにエージェントを活用する
+- `/agent` や `--agent` でエージェントを切り替える
+- プロジェクト固有の標準に合わせたカスタム指示ファイルを作成する
 
-> ⏱️ **Estimated Time**: ~55 minutes (20 min reading + 35 min hands-on)
+> ⏱️ **目安の所要時間**: 約55分（読書 20分 + ハンズオン 35分）
 
 ---
 
-## 🧩 Real-World Analogy: Hiring Specialists
+## 🧩 現実世界のアナロジー：専門家を雇う
 
-When you need help with your house, you don't call one "general helper." You call specialists:
+家のことで困ったとき、一人の「なんでも屋」に頼むのではなく、専門家に相談しますよね。
 
-| Problem | Specialist | Why |
+| 問題 | 専門家 | 理由 |
 |---------|------------|-----|
-| Leaky pipe | Plumber | Knows plumbing codes, has specialized tools |
-| Rewiring | Electrician | Understands safety requirements, up to code |
-| New roof | Roofer | Knows materials, local weather considerations |
+| 水漏れ | 配管工 | 配管の規格を知り、専用工具を持っている |
+| 電気の配線 | 電気工事士 | 安全基準を熟知し、法令に準拠している |
+| 屋根の葺き替え | 屋根工 | 素材の知識があり、地域の気候を考慮できる |
 
-Agents work the same way. Instead of a generic AI, use agents that focus on specific tasks and know the right process to follow. Set up the instructions once, then reuse them whenever you need that specialty: code review, testing, security, documentation.
+エージェントも同じ仕組みです。汎用 AI の代わりに、特定のタスクに集中し、適切なプロセスを知っているエージェントを使いましょう。指示は一度設定するだけで、コードレビュー・テスト・セキュリティ・ドキュメント作成など、必要なときにいつでも再利用できます。
 
 <img src="images/hiring-specialists-analogy.png" alt="Hiring Specialists Analogy - Just as you call specialized tradespeople for house repairs, AI agents are specialized for specific tasks like code review, testing, security, and documentation" width="800" />
 
 ---
 
-# Using Agents
+# エージェントを使う
 
-Get started with built-in and custom agents right away.
+組み込みエージェントとカスタムエージェントをすぐに使ってみましょう。
 
 ---
 
-## *New to Agents?* Start Here!
-Never used or made an agent? Here's all you need to know to get started for this course.
+## *エージェントが初めての方へ* まずはここから！
+エージェントを使ったことがない方も、作ったことがない方も、このコースを始めるために必要なことをすべてご紹介します。
 
-1. **Try a *built-in* agent right now:**
+1. **今すぐ*組み込み*エージェントを試す：**
    ```bash
    copilot
    > /plan Add input validation for book year in the book app
    ```
-   This invokes the Plan agent to create a step-by-step implementation plan.
+   これで Plan エージェントが呼び出され、ステップごとの実装計画が作成されます。
 
-2. **See one of our custom agent examples:** It's simple to define an agent's instructions, look at our provided [python-reviewer.agent.md](../.github/agents/python-reviewer.agent.md) file to see the pattern.
+2. **カスタムエージェントのサンプルを見る：** エージェントの指示定義はとても簡単です。提供されている [python-reviewer.agent.md](../.github/agents/python-reviewer.agent.md) ファイルを見て、パターンを確認しましょう。
 
-3. **Understand the core concept:** Agents are like consulting a specialist instead of a generalist. A "frontend agent" will focus on accessibility and component patterns automatically, you don't have to remind it because it is already specified in the agent's instructions.
+3. **コアコンセプトを理解する：** エージェントとは、ジェネラリストではなく専門家に相談するようなものです。「フロントエンドエージェント」はアクセシビリティやコンポーネントパターンに自動的に集中します。エージェントの指示にすでに記載されているので、毎回リマインドする必要はありません。
 
 
-## Built-in Agents
+## 組み込みエージェント
 
-**You've already used some built-in agents in Chapter 03 Development Workflow!**
-<br>`/plan` and `/review` are actually built-in agents. Now you know what's happening under the hood. Here's the full list:
+**Chapter 03 の開発ワークフローで、すでに一部の組み込みエージェントを使っています！**
+<br>`/plan` と `/review` は実は組み込みエージェントです。内部でどう動いているかがわかりましたね。以下が全リストです：
 
-| Agent | How to Invoke | What It Does |
+| エージェント | 呼び出し方 | 役割 |
 |-------|---------------|--------------|
-| **Plan** | `/plan` or `Shift+Tab` (cycle modes) | Creates step-by-step implementation plans before coding |
-| **Code-review** | `/review` | Reviews staged/unstaged changes with focused, actionable feedback |
-| **Init** | `/init` | Generates project configuration files (instructions, agents) |
-| **Explore** | *Automatic* | Used internally when you ask Copilot to explore or analyze the codebase |
-| **Task** | *Automatic* | Executes commands like tests, builds, lints, and dependency installs |
+| **Plan** | `/plan` または `Shift+Tab`（モード切り替え） | コーディング前にステップごとの実装計画を作成する |
+| **Code-review** | `/review` | ステージ済み・未ステージの変更を、具体的でアクション可能なフィードバックでレビューする |
+| **Init** | `/init` | プロジェクト設定ファイル（指示ファイル・エージェントファイル）を生成する |
+| **Explore** | *自動* | コードベースの探索・分析を Copilot に依頼したとき内部で使用される |
+| **Task** | *自動* | テスト・ビルド・lint・依存関係インストールなどのコマンドを実行する |
 
 <br>
 
-**Built-in agents in action** - Examples of invoking Plan, Code-review, Explore, and Task
+**組み込みエージェントの活用例** - Plan・Code-review・Explore・Task の呼び出し例
 
 ```bash
 copilot
 
-# Invoke the Plan agent to create an implementation plan
+# Plan エージェントを呼び出して実装計画を作成
 > /plan Add input validation for book year in the book app
 
-# Invoke the Code-review agent on your changes
+# Code-review エージェントで変更をレビュー
 > /review
 
-# Explore and Task agents are invoked automatically when relevant:
-> Run the test suite        # Uses Task agent
+# Explore・Task エージェントは関連する場面で自動的に呼び出されます：
+> Run the test suite        # Task エージェントを使用
 
-> Explore how book data is loaded    # Uses Explore agent
+> Explore how book data is loaded    # Explore エージェントを使用
 ```
 
-What about the Task Agent? It works behind the scenes to manage and track what is going on and to report back in a clean and clear format:
+Task エージェントについて：バックグラウンドで動作し、進行状況を管理・追跡して、わかりやすい形式で結果を報告します。
 
-| Outcome | What You See |
+| 結果 | 表示内容 |
 |---------|--------------|
-| ✅ **Success** | Brief summary (e.g., "All 247 tests passed", "Build succeeded") |
-| ❌ **Failure** | Full output with stack traces, compiler errors, and detailed logs |
+| ✅ **成功** | 簡潔なサマリー（例：「All 247 tests passed」「Build succeeded」） |
+| ❌ **失敗** | スタックトレース・コンパイルエラー・詳細ログを含む全出力 |
 
 
-> 📚 **Official Documentation**: [GitHub Copilot CLI Agents](https://docs.github.com/copilot/how-tos/use-copilot-agents/use-copilot-cli#use-custom-agents)
+> 📚 **公式ドキュメント**: [GitHub Copilot CLI Agents](https://docs.github.com/copilot/how-tos/use-copilot-agents/use-copilot-cli#use-custom-agents)
 
 ---
 
-# Adding Agents to Copilot CLI
+# Copilot CLI にエージェントを追加する
 
-You can simply define your own agents to be part of your workflow! Define once, then direct!
+独自のエージェントをワークフローに追加するのは簡単です！一度定義すれば、あとは指定するだけで使えます。
 
 <img src="images/using-agents.png" alt="Four colorful AI robots standing together, each with different tools representing specialized agent capabilities" width="800"/>
 
-## 🗂️ Add your agents 
+## 🗂️ エージェントを追加する
 
-Agent files are markdown files with a `.agent.md` extension. They have two parts: YAML frontmatter (metadata) and markdown instructions.
+エージェントファイルは `.agent.md` という拡張子を持つ Markdown ファイルです。YAML frontmatter（メタデータ）と Markdown の指示、この2つのパートで構成されています。
 
-> 💡 **New to YAML frontmatter?** It's a small block of settings at the top of the file, surrounded by `---` markers. YAML is just `key: value` pairs. The rest of the file is regular markdown.
+> 💡 **YAML frontmatter が初めての方へ** ファイルの先頭に `---` で囲まれた設定ブロックのことです。YAML は `キー: 値` の形式で書くだけです。それ以降は通常の Markdown です。
 
-Here's a minimal agent:
+最小構成のエージェント例：
 
 ```markdown
 ---
@@ -131,91 +131,91 @@ When reviewing code, always check for:
 - Hardcoded secrets
 ```
 
-> 💡 **Required vs Optional**: The `description` field is required. Other fields like `name`, `tools`, and `model` are optional.
+> 💡 **必須 vs 任意**: `description` フィールドは必須です。`name`・`tools`・`model` などのフィールドは任意です。
 
-## Where to put agent files
+## エージェントファイルの配置場所
 
-| Location | Scope | Best For |
+| 場所 | スコープ | 用途 |
 |----------|-------|----------|
-| `.github/agents/` | Project-specific | Team-shared agents with project conventions |
-| `~/.copilot/agents/` | Global (all projects) | Personal agents you use everywhere |
+| `.github/agents/` | プロジェクト固有 | プロジェクトの規約を共有するチーム向けエージェント |
+| `~/.copilot/agents/` | グローバル（全プロジェクト） | どこでも使える個人用エージェント |
 
-**This project includes sample agent files in the [.github/agents/](../.github/agents/) folder**. You can write your own, or customize the ones already provided.
+**このプロジェクトには [.github/agents/](../.github/agents/) フォルダにサンプルエージェントファイルが含まれています**。自分で書いても、提供されているものをカスタマイズしてもかまいません。
 
 <details>
-<summary>📂 See the sample agents in this course</summary>
+<summary>📂 このコースのサンプルエージェントを見る</summary>
 
-| File | Description |
+| ファイル | 説明 |
 |------|-------------|
-| `hello-world.agent.md` | Minimal example - start here |
-| `python-reviewer.agent.md` | Python code quality reviewer |
-| `pytest-helper.agent.md` | Pytest testing specialist |
+| `hello-world.agent.md` | 最小構成の例 - まずここから |
+| `python-reviewer.agent.md` | Python コード品質レビュアー |
+| `pytest-helper.agent.md` | pytest テスト専門家 |
 
 ```bash
-# Or copy one to your personal agents folder (available in every project)
+# または個人用エージェントフォルダにコピーする（すべてのプロジェクトで利用可能）
 cp .github/agents/python-reviewer.agent.md ~/.copilot/agents/
 ```
 
-For more community agents, see [github/awesome-copilot](https://github.com/github/awesome-copilot)
+コミュニティのエージェントについては [github/awesome-copilot](https://github.com/github/awesome-copilot) をご覧ください。
 
 </details>
 
 
-## 🚀 Two ways to use custom agents
+## 🚀 カスタムエージェントの使い方（2通り）
 
-### Interactive mode
-Inside interactive mode, list agents using `/agent` and select the agent to start working with. 
-Select an agent to continue your conversation with.
+### インタラクティブモード
+インタラクティブモード内で `/agent` を使うとエージェントの一覧が表示され、使用するエージェントを選択できます。
+エージェントを選択すると、そのエージェントとの会話が続きます。
 
 ```bash
 copilot
 > /agent
 ```
 
-To change to a different agent, or to return to default mode, use the `/agent` command again.
+別のエージェントに切り替えたり、デフォルトモードに戻したりする場合は、再度 `/agent` コマンドを使います。
 
-### Programmatic mode
+### プログラムモード
 
-Launch straight into a new session with an agent.
+エージェントを指定して新しいセッションを直接開始します。
 
 ```bash
 copilot --agent python-reviewer
 > Review @samples/book-app-project/books.py
 ```
 
-> 💡 **Switching agents**: You can switch to a different agent at any time by using `/agent` or `--agent` again. To return to the standard Copilot CLI experience, use `/agent` and select **no agent**.
+> 💡 **エージェントの切り替え**: `/agent` または `--agent` をいつでも使って別のエージェントに切り替えられます。通常の Copilot CLI に戻すには、`/agent` でエージェントなしを選択してください。
 
 ---
 
-# Going Deeper with Agents
+# エージェントをより深く理解する
 
 <img src="images/creating-custom-agents.png" alt="Robot being assembled on a workbench surrounded by components and tools representing custom agent creation" width="800"/>
 
-> 💡 **This section is optional.** The built-in agents (`/plan`, `/review`) are powerful enough for most workflows. Create custom agents when you need specialized expertise that's consistently applied across your work.
+> 💡 **このセクションはオプションです。** 組み込みエージェント（`/plan`・`/review`）だけでほとんどのワークフローには十分です。カスタムエージェントは、作業全体に一貫して専門的な知識を適用したいときに作成しましょう。
 
-Each topic below is self-contained. **Pick what interests you - you don't need to read them all at once.**
+以下のトピックはそれぞれ独立しています。**興味のあるものを選んで読んでください - すべてを一度に読む必要はありません。**
 
-| I want to... | Jump to |
+| やりたいこと | ジャンプ先 |
 |---|---|
-| See why agents beat generic prompts | [Specialist vs Generic](#specialist-vs-generic-see-the-difference) |
-| Combine agents on a feature | [Working with Multiple Agents](#working-with-multiple-agents) |
-| Organize, name, and share agents | [Organizing & Sharing Agents](#organizing--sharing-agents) |
-| Set up always-on project context | [Configuring Your Project for Copilot](#configuring-your-project-for-copilot) |
-| Look up YAML properties and tools | [Agent File Reference](#agent-file-reference) |
+| エージェントが汎用プロンプトより優れている理由を見る | [スペシャリスト vs 汎用](#specialist-vs-generic-see-the-difference) |
+| 複数のエージェントを組み合わせる | [複数エージェントで作業する](#working-with-multiple-agents) |
+| エージェントの整理・命名・共有 | [エージェントの整理と共有](#organizing--sharing-agents) |
+| プロジェクトの常時コンテキストを設定する | [Copilot 向けのプロジェクト設定](#configuring-your-project-for-copilot) |
+| YAML プロパティとツールを調べる | [エージェントファイルリファレンス](#agent-file-reference) |
 
-Select a scenario below to expand it.
+以下のシナリオを選択して展開してください。
 
 ---
 
 <a id="specialist-vs-generic-see-the-difference"></a>
 <details>
-<summary><strong>Specialist vs Generic: See the Difference</strong> - Why agents produce better output than generic prompts</summary>
+<summary><strong>スペシャリスト vs 汎用：違いを見る</strong> - エージェントが汎用プロンプトより優れた出力を生む理由</summary>
 
-## Specialist vs Generic: See the Difference
+## スペシャリスト vs 汎用：違いを見る
 
-This is where agents prove their value. Watch the difference:
+これがエージェントの真価を発揮する場面です。違いを見てみましょう。
 
-### Without an Agent (Generic Copilot)
+### エージェントなし（汎用 Copilot）
 
 ```bash
 copilot
@@ -223,7 +223,7 @@ copilot
 > Add a function to search books by year range in the book app
 ```
 
-**Generic output**:
+**汎用出力**:
 ```python
 def search_by_year_range(books, start_year, end_year):
     results = []
@@ -233,11 +233,11 @@ def search_by_year_range(books, start_year, end_year):
     return results
 ```
 
-Basic. Works. But missing a lot.
+基本的な実装。動作はします。でも、多くのものが欠けています。
 
 ---
 
-### With the Python Reviewer Agent
+### Python Reviewer エージェントを使った場合
 
 ```bash
 copilot
@@ -248,7 +248,7 @@ copilot
 > Add a function to search books by year range in the book app
 ```
 
-**Specialist output**:
+**専門家による出力**:
 ```python
 from typing import List, Dict, Any
 
@@ -285,16 +285,16 @@ def search_by_year_range(
     ]
 ```
 
-**What the python-reviewer agent automatically includes**:
-- ✅ Type hints on all parameters and return values
-- ✅ Comprehensive docstring with Args/Returns/Raises
-- ✅ Input validation with proper error handling
-- ✅ List comprehension for better performance
-- ✅ Edge case handling (missing/invalid year values)
-- ✅ PEP 8 compliant formatting
-- ✅ Defensive programming practices
+**python-reviewer エージェントが自動的に含めるもの**：
+- ✅ すべてのパラメーターと戻り値への型ヒント
+- ✅ Args・Returns・Raises を含む包括的な docstring
+- ✅ 適切なエラーハンドリングを伴う入力バリデーション
+- ✅ パフォーマンス向上のためのリスト内包表記
+- ✅ エッジケースの処理（year の値が欠落・無効な場合）
+- ✅ PEP 8 準拠のフォーマット
+- ✅ 防御的プログラミングの実践
 
-**The difference**: Same prompt, dramatically better output. The agent brings expertise you'd forget to ask for.
+**違い**：同じプロンプトで、劇的に高品質な出力。エージェントは、あなたが頼むのを忘れそうな専門知識を自動的に持ち込んでくれます。
 
 </details>
 
@@ -302,13 +302,13 @@ def search_by_year_range(
 
 <a id="working-with-multiple-agents"></a>
 <details>
-<summary><strong>Working with Multiple Agents</strong> - Combine specialists, switch mid-session, agent-as-tools</summary>
+<summary><strong>複数エージェントで作業する</strong> - スペシャリストの組み合わせ・セッション中の切り替え・エージェントのツールとしての利用</summary>
 
-## Working with Multiple Agents
+## 複数エージェントで作業する
 
-The real power comes when specialists work together on a feature.
+複数のスペシャリストが一つの機能に協力するとき、真の力が発揮されます。
 
-### Example: Building a Simple Feature
+### 例：シンプルな機能の開発
 
 ```bash
 copilot
@@ -332,20 +332,20 @@ copilot
 > Create an implementation plan that includes the method implementation and comprehensive tests.
 ```
 
-**The key insight**: You're the architect directing specialists. They handle the details, you handle the vision.
+**重要なポイント**：あなたがスペシャリストを指揮するアーキテクト役です。細部はエージェントに任せ、あなたはビジョンを担います。
 
 <details>
-<summary>🎬 See it in action!</summary>
+<summary>🎬 実際の動作を見る！</summary>
 
 ![Python Reviewer Demo](images/python-reviewer-demo.gif)
 
-*Demo output varies - your model, tools, and responses will differ from what's shown here.*
+*デモの出力は参考例です - 使用するモデル・ツール・レスポンスは表示内容と異なる場合があります。*
 
 </details>
 
-### Agent as Tools
+### エージェントのツールとしての利用
 
-When agents are configured, Copilot can also call them as tools during complex tasks. If you ask for a full-stack feature, Copilot may automatically delegate parts to the appropriate specialist agents.
+エージェントが設定されている場合、Copilot は複雑なタスクの実行中にそれらをツールとして呼び出すこともできます。フルスタックの機能開発を依頼すると、Copilot が適切なスペシャリストエージェントに自動的に各パートを委任することがあります。
 
 </details>
 
@@ -353,15 +353,15 @@ When agents are configured, Copilot can also call them as tools during complex t
 
 <a id="organizing--sharing-agents"></a>
 <details>
-<summary><strong>Organizing & Sharing Agents</strong> - Naming, file placement, instruction files, and team sharing</summary>
+<summary><strong>エージェントの整理と共有</strong> - 命名・ファイル配置・指示ファイル・チームでの共有</summary>
 
-## Organizing & Sharing Agents
+## エージェントの整理と共有
 
-### Naming Your Agents
+### エージェントの命名
 
-When you create agent files, the name matters. It's what you'll type after `/agent` or `--agent`, and what your teammates will see in the agent list.
+エージェントファイルを作成するとき、名前は重要です。`/agent` や `--agent` のあとに入力するものであり、チームメンバーがエージェントリストで目にするものです。
 
-| ✅ Good Names | ❌ Avoid |
+| ✅ 良い名前 | ❌ 避けるべき名前 |
 |--------------|----------|
 | `frontend` | `my-agent` |
 | `backend-api` | `agent1` |
@@ -369,28 +369,28 @@ When you create agent files, the name matters. It's what you'll type after `/age
 | `react-specialist` | `code` |
 | `python-backend` | `assistant` |
 
-**Naming conventions:**
-- Use lowercase with hyphens: `my-agent-name.agent.md`
-- Include the domain: `frontend`, `backend`, `devops`, `security`
-- Be specific when needed: `react-typescript` vs just `frontend`
+**命名規則：**
+- 小文字とハイフンを使う：`my-agent-name.agent.md`
+- ドメインを含める：`frontend`・`backend`・`devops`・`security`
+- 必要に応じて具体的にする：単なる `frontend` ではなく `react-typescript`
 
 ---
 
-### Sharing with Your Team
+### チームとの共有
 
-Place agent files in `.github/agents/` and they're version controlled. Push to your repo and every team member gets them automatically. But agents are just one type of file Copilot reads from your project. It also supports **instruction files** that apply automatically to every session, without anyone needing to run `/agent`.
+エージェントファイルを `.github/agents/` に配置すれば、バージョン管理されます。リポジトリに push すると、すべてのチームメンバーが自動的に利用できます。ただし、エージェントは Copilot がプロジェクトから読み込むファイルの一種にすぎません。**指示ファイル**もサポートされており、こちらは `/agent` を実行しなくても、すべてのセッションに自動的に適用されます。
 
-Think of it this way: agents are specialists you call on, and instruction files are team rules that are always active.
+考え方のヒント：エージェントはオンデマンドで呼び出すスペシャリスト、指示ファイルは常に有効なチームのルールです。
 
-### Where to Put Your Files
+### ファイルの配置場所
 
-You already know the two main locations (see [Where to put agent files](#where-to-put-agent-files) above). Use this decision tree to choose:
+2つのメインの配置場所についてはすでに説明しました（[エージェントファイルの配置場所](#where-to-put-agent-files)を参照）。以下の決定ツリーを使って選びましょう。
 
 <img src="images/agent-file-placement-decision-tree.png" alt="Decision tree for where to put agent files: experimenting → current folder, team use → .github/agents/, everywhere → ~/.copilot/agents/" width="800"/>
 
-**Start simple:** Create a single `*.agent.md` file in your project folder. Move it to a permanent location once you're happy with it.
+**シンプルに始めましょう：** まずプロジェクトフォルダに `*.agent.md` ファイルを1つ作ります。満足できたら、恒久的な場所に移動してください。
 
-Beyond agent files, Copilot also reads **project-level instruction files** automatically, no `/agent` needed. See [Configuring Your Project for Copilot](#configuring-your-project-for-copilot) below for `AGENTS.md`, `.instructions.md`, and `/init`.
+エージェントファイルに加えて、Copilot は**プロジェクトレベルの指示ファイル**も自動的に読み込みます。`/agent` は不要です。`AGENTS.md`・`.instructions.md`・`/init` については、後述の[Copilot 向けのプロジェクト設定](#configuring-your-project-for-copilot)をご覧ください。
 
 </details>
 
@@ -398,43 +398,43 @@ Beyond agent files, Copilot also reads **project-level instruction files** autom
 
 <a id="configuring-your-project-for-copilot"></a>
 <details>
-<summary><strong>Configuring Your Project for Copilot</strong> - AGENTS.md, instruction files, and /init setup</summary>
+<summary><strong>Copilot 向けのプロジェクト設定</strong> - AGENTS.md・指示ファイル・/init によるセットアップ</summary>
 
-## Configuring Your Project for Copilot
+## Copilot 向けのプロジェクト設定
 
-Agents are specialists you invoke on demand. **Project configuration files** are different: Copilot reads them automatically in every session to understand your project's conventions, tech stack, and rules. No one needs to run `/agent`; the context is always active for everyone working in the repo.
+エージェントはオンデマンドで呼び出すスペシャリストです。**プロジェクト設定ファイル**はそれとは異なります。Copilot はすべてのセッションで自動的にこれらを読み込み、プロジェクトの規約・技術スタック・ルールを把握します。誰も `/agent` を実行する必要はなく、リポジトリで作業する全員に常にコンテキストが適用されます。
 
-### Quick Setup with /init
+### /init を使ったクイックセットアップ
 
-The fastest way to get started is to let Copilot generate configuration files for you:
+最も手軽に始める方法は、Copilot に設定ファイルを生成させることです。
 
 ```bash
 copilot
 > /init
 ```
 
-Copilot will scan your project and create tailored instruction files. You can edit them afterwards.
+Copilot がプロジェクトをスキャンして、プロジェクトに合わせた指示ファイルを作成します。その後、自由に編集できます。
 
-### Instruction File Formats
+### 指示ファイルの形式
 
-| File | Scope | Notes |
+| ファイル | スコープ | 備考 |
 |------|-------|-------|
-| `AGENTS.md` | Project root or nested | **Cross-platform standard** - works with Copilot and other AI assistants |
-| `.github/copilot-instructions.md` | Project | GitHub Copilot specific |
-| `.github/instructions/*.instructions.md` | Project | Granular, topic-specific instructions |
-| `CLAUDE.md`, `GEMINI.md` | Project root | Supported for compatibility |
+| `AGENTS.md` | プロジェクトルートまたはネスト | **クロスプラットフォーム標準** - Copilot および他の AI アシスタントで動作 |
+| `.github/copilot-instructions.md` | プロジェクト | GitHub Copilot 専用 |
+| `.github/instructions/*.instructions.md` | プロジェクト | 詳細なトピック別指示 |
+| `CLAUDE.md`・`GEMINI.md` | プロジェクトルート | 互換性のためサポート |
 
-> 🎯 **Just getting started?** Use `AGENTS.md` for project instructions. You can explore the other formats later as needed.
+> 🎯 **まず始めるなら？** プロジェクト指示には `AGENTS.md` を使いましょう。他の形式は必要に応じて後で試せます。
 
 ### AGENTS.md
 
-`AGENTS.md` is the recommended format. It's an [open standard](https://agents.md/) that works across Copilot and other AI coding tools. Place it in your repository root and Copilot reads it automatically. This project's own [AGENTS.md](../AGENTS.md) is a working example.
+`AGENTS.md` は推奨フォーマットです。[オープンスタンダード](https://agents.md/)として Copilot および他の AI コーディングツールで動作します。リポジトリのルートに置くと、Copilot が自動的に読み込みます。このプロジェクト自身の [AGENTS.md](../AGENTS.md) が実際の例です。
 
-A typical `AGENTS.md` describes your project context, code style, security requirements, and testing standards. Use `/init` to generate one, or write your own following the pattern in our example file.
+典型的な `AGENTS.md` には、プロジェクトのコンテキスト・コードスタイル・セキュリティ要件・テスト標準が記述されます。`/init` で生成するか、サンプルファイルのパターンに従って自分で書いてみましょう。
 
-### Custom Instruction Files (.instructions.md)
+### カスタム指示ファイル（.instructions.md）
 
-For teams that want more granular control, split instructions into topic-specific files. Each file covers one concern and applies automatically:
+より細かい制御を望むチーム向けに、指示をトピック別のファイルに分割できます。各ファイルは一つの関心事をカバーし、自動的に適用されます。
 
 ```
 .github/
@@ -444,13 +444,13 @@ For teams that want more granular control, split instructions into topic-specifi
     └── api-design.instructions.md
 ```
 
-> 💡 **Note**: Instruction files work with any language. This example uses Python to match our course project, but you can create similar files for TypeScript, Go, Rust, or any technology your team uses.
+> 💡 **注意**: 指示ファイルはどの言語でも使えます。この例はコースプロジェクトに合わせて Python を使っていますが、TypeScript・Go・Rust など、チームが使う任意の技術向けにも同様のファイルを作成できます。
 
-**Finding community instruction files**: Browse [github/awesome-copilot](https://github.com/github/awesome-copilot) for pre-made instruction files covering .NET, Angular, Azure, Python, Docker, and many more technologies.
+**コミュニティの指示ファイルを探す**: .NET・Angular・Azure・Python・Docker などの技術向けに作られた指示ファイルは [github/awesome-copilot](https://github.com/github/awesome-copilot) で見つかります。
 
-### Disabling Custom Instructions
+### カスタム指示の無効化
 
-If you need Copilot to ignore all project-specific configurations (useful for debugging or comparing behavior):
+すべてのプロジェクト固有設定を Copilot に無視させたい場合（デバッグや動作比較に便利）：
 
 ```bash
 copilot --no-custom-instructions
@@ -462,13 +462,13 @@ copilot --no-custom-instructions
 
 <a id="agent-file-reference"></a>
 <details>
-<summary><strong>Agent File Reference</strong> - YAML properties, tool aliases, and complete examples</summary>
+<summary><strong>エージェントファイルリファレンス</strong> - YAML プロパティ・ツールエイリアス・完全な例</summary>
 
-## Agent File Reference
+## エージェントファイルリファレンス
 
-### A More Complete Example
+### より詳しい例
 
-You've seen the [minimal agent format](#-add-your-agents) above. Here's a more comprehensive agent that uses the `tools` property. Create `~/.copilot/agents/python-reviewer.agent.md`:
+[最小構成のエージェント形式](#-add-your-agents) はすでに確認しました。ここでは `tools` プロパティを使った、より本格的なエージェントを紹介します。`~/.copilot/agents/python-reviewer.agent.md` を作成しましょう：
 
 ```markdown
 ---
@@ -500,52 +500,52 @@ You are a Python specialist focused on code quality and best practices.
 - Input validation completeness
 ```
 
-### YAML Properties
+### YAML プロパティ
 
-| Property | Required | Description |
+| プロパティ | 必須 | 説明 |
 |----------|----------|-------------|
-| `name` | No | Display name (defaults to filename) |
-| `description` | **Yes** | What the agent does - helps Copilot understand when to suggest it |
-| `tools` | No | List of allowed tools (omit = all tools available). See tool aliases below. |
-| `target` | No | Limit to `vscode` or `github-copilot` only |
+| `name` | いいえ | 表示名（省略するとファイル名が使われる） |
+| `description` | **はい** | エージェントの役割 - Copilot がいつ提案するかを判断するための説明 |
+| `tools` | いいえ | 使用できるツールのリスト（省略するとすべてのツールが使用可能）。下記のツールエイリアスを参照。 |
+| `target` | いいえ | `vscode` または `github-copilot` のみに限定する |
 
-### Tool Aliases
+### ツールエイリアス
 
-Use these names in the `tools` list:
-- `read` - Read file contents
-- `edit` - Edit files
-- `search` - Search files (grep/glob)
-- `execute` - Run shell commands (also: `shell`, `Bash`)
-- `agent` - Invoke other custom agents
+`tools` リストで使用する名前：
+- `read` - ファイルの内容を読み込む
+- `edit` - ファイルを編集する
+- `search` - ファイルを検索する（grep・glob）
+- `execute` - シェルコマンドを実行する（別名：`shell`・`Bash`）
+- `agent` - 他のカスタムエージェントを呼び出す
 
-> 📖 **Official docs**: [Custom agents configuration](https://docs.github.com/copilot/reference/custom-agents-configuration)
+> 📖 **公式ドキュメント**: [Custom agents configuration](https://docs.github.com/copilot/reference/custom-agents-configuration)
 >
-> ⚠️ **VS Code Only**: The `model` property (for selecting AI models) works in VS Code but is not supported in GitHub Copilot CLI. You can safely include it for cross-platform agent files. GitHub Copilot CLI will ignore it.
+> ⚠️ **VS Code のみ**: `model` プロパティ（AI モデルを選択するもの）は VS Code では動作しますが、GitHub Copilot CLI ではサポートされていません。クロスプラットフォームのエージェントファイルに含めても問題なく、GitHub Copilot CLI は無視します。
 
-### More Agent Templates
+### さらなるエージェントテンプレート
 
-> 💡 **Note for beginners**: The examples below are templates. **Replace the specific technologies with whatever your project uses.** The important thing is the *structure* of the agent, not the specific technologies mentioned.
+> 💡 **初心者向けメモ**: 以下の例はテンプレートです。**特定の技術は自分のプロジェクトで使っているものに置き換えてください。** 大切なのは具体的な技術ではなく、エージェントの*構造*です。
 
-This project includes working examples in the [.github/agents/](../.github/agents/) folder:
-- [hello-world.agent.md](../.github/agents/hello-world.agent.md) - Minimal example, start here
-- [python-reviewer.agent.md](../.github/agents/python-reviewer.agent.md) - Python code quality reviewer
-- [pytest-helper.agent.md](../.github/agents/pytest-helper.agent.md) - Pytest testing specialist
+このプロジェクトには [.github/agents/](../.github/agents/) フォルダに実際の例が含まれています：
+- [hello-world.agent.md](../.github/agents/hello-world.agent.md) - 最小構成の例、まずここから
+- [python-reviewer.agent.md](../.github/agents/python-reviewer.agent.md) - Python コード品質レビュアー
+- [pytest-helper.agent.md](../.github/agents/pytest-helper.agent.md) - pytest テスト専門家
 
-For community agents, see [github/awesome-copilot](https://github.com/github/awesome-copilot).
+コミュニティのエージェントは [github/awesome-copilot](https://github.com/github/awesome-copilot) をご覧ください。
 
 </details>
 
 ---
 
-# Practice
+# 練習
 
 <img src="../images/practice.png" alt="Warm desk setup with monitor showing code, lamp, coffee cup, and headphones ready for hands-on practice" width="800"/>
 
-Create your own agents and see them in action.
+独自のエージェントを作成して、実際に動かしてみましょう。
 
 ---
 
-## ▶️ Try It Yourself
+## ▶️ 実際に試してみよう
 
 ```bash
 
@@ -605,29 +605,29 @@ copilot
 
 ---
 
-## 📝 Assignment
+## 📝 課題
 
-### Main Challenge: Build a Specialized Agent Team
+### メインチャレンジ：専門エージェントチームを作る
 
-The hands-on example created `reviewer` and `documentor` agents. Now practice creating and using agents for a different task - improving data validation in the book app:
+ハンズオン例では `reviewer` と `documentor` エージェントを作成しました。今度は別のタスク—book app のデータバリデーション改善—でエージェントの作成と活用を練習しましょう。
 
-1. Create 3 agent files (`.agent.md`) tailored to the book app, one per agent, placed in `.github/agents/`
-2. Your agents:
-   - **data-validator**: checks `data.json` for missing or malformed data (empty authors, year=0, missing fields)
-   - **error-handler**: reviews Python code for inconsistent error handling and suggests a unified approach
-   - **doc-writer**: generates or updates docstrings and README content
-3. Use each agent on the book app:
-   - `data-validator` → audit `@samples/book-app-project/data.json`
-   - `error-handler` → review `@samples/book-app-project/books.py` and `@samples/book-app-project/utils.py`
-   - `doc-writer` → add docstrings to `@samples/book-app-project/books.py`
-4. Collaborate: use `error-handler` to identify error-handling gaps, then `doc-writer` to document the improved approach
+1. book app に合わせたエージェントファイル（`.agent.md`）を3つ作成し、`.github/agents/` に配置する（エージェントごとに1ファイル）
+2. 作成するエージェント：
+   - **data-validator**：`data.json` の欠落・不正データをチェック（著者が空・year=0・フィールドが欠落など）
+   - **error-handler**：Python コードのエラーハンドリングの一貫性をレビューし、統一されたアプローチを提案する
+   - **doc-writer**：docstring と README の内容を生成・更新する
+3. 各エージェントを book app で使う：
+   - `data-validator` → `@samples/book-app-project/data.json` を監査する
+   - `error-handler` → `@samples/book-app-project/books.py` と `@samples/book-app-project/utils.py` をレビューする
+   - `doc-writer` → `@samples/book-app-project/books.py` に docstring を追加する
+4. コラボレーション：`error-handler` でエラーハンドリングのギャップを特定し、次に `doc-writer` で改善されたアプローチをドキュメント化する
 
-**Success criteria**: You have 3 working agents that produce consistent, high-quality output and you can switch between them with `/agent`.
+**成功の基準**：3つのエージェントが一貫して高品質な出力を生成し、`/agent` でそれらを切り替えられること。
 
 <details>
-<summary>💡 Hints (click to expand)</summary>
+<summary>💡 ヒント（クリックして展開）</summary>
 
-**Starter templates**: create one file per agent in `.github/agents/`:
+**スターターテンプレート**：`.github/agents/` にエージェントごとに1ファイル作成する：
 
 `data-validator.agent.md`:
 ```markdown
@@ -674,9 +674,9 @@ You are a technical writer who creates clear Python documentation.
 - Note any exceptions raised
 ```
 
-**Testing your agents:**
+**エージェントのテスト：**
 
-> 💡 **Note:** You should already have `samples/book-app-project/data.json` in your local copy of this repo. If it is missing, download the original version from the source repo:
+> 💡 **注意：** `samples/book-app-project/data.json` はすでにローカルのリポジトリに含まれているはずです。見当たらない場合は、ソースリポジトリからオリジナルのバージョンをダウンロードしてください：
 > [data.json](https://github.com/github/copilot-cli-for-beginners/blob/main/samples/book-app-project/data.json)
 
 ```bash
@@ -686,97 +686,97 @@ copilot
 > @samples/book-app-project/data.json Check for books with empty author fields or invalid years
 ```
 
-**Tip:** The `description` field in the YAML frontmatter is required for agents to work.
+**ヒント：** YAML frontmatter の `description` フィールドはエージェントが機能するために必須です。
 
 </details>
 
-### Bonus Challenge: Instruction Library
+### ボーナスチャレンジ：指示ライブラリ
 
-You've built agents you invoke on demand. Now try the other side: **instruction files** that Copilot reads automatically in every session, no `/agent` needed.
+オンデマンドで呼び出すエージェントは作れました。今度は逆側、つまり `/agent` 不要でセッションごとに Copilot が自動的に読み込む**指示ファイル**を試してみましょう。
 
-Create a `.github/instructions/` folder with at least 3 instruction files:
-- `python-style.instructions.md` for enforcing PEP 8 and type hint conventions
-- `test-standards.instructions.md` for enforcing pytest conventions in test files
-- `data-quality.instructions.md` for validating JSON data entries
+`.github/instructions/` フォルダを作成し、少なくとも3つの指示ファイルを追加しましょう：
+- `python-style.instructions.md`：PEP 8 と型ヒントの規約を適用する
+- `test-standards.instructions.md`：テストファイルでの pytest の規約を適用する
+- `data-quality.instructions.md`：JSON データエントリのバリデーションを行う
 
-Test each instruction file on the book app code.
+各指示ファイルを book app のコードでテストしましょう。
 
 ---
 
 <details>
-<summary>🔧 <strong>Common Mistakes & Troubleshooting</strong> (click to expand)</summary>
+<summary>🔧 <strong>よくあるミスとトラブルシューティング</strong>（クリックして展開）</summary>
 
-### Common Mistakes
+### よくあるミス
 
-| Mistake | What Happens | Fix |
+| ミス | 起きること | 対処法 |
 |---------|--------------|-----|
-| Missing `description` in agent frontmatter | Agent won't load or won't be discoverable | Always include `description:` in YAML frontmatter |
-| Wrong file location for agents | Agent not found when you try to use it | Place in `~/.copilot/agents/` (personal) or `.github/agents/` (project) |
-| Using `.md` instead of `.agent.md` | File may not be recognized as an agent | Name files like `python-reviewer.agent.md` |
-| Overly long agent prompts | May hit the 30,000 character limit | Keep agent definitions focused; use skills for detailed instructions |
+| エージェントの frontmatter に `description` がない | エージェントが読み込まれないか、発見されない | YAML frontmatter に必ず `description:` を含める |
+| エージェントファイルの配置場所が間違っている | 使おうとしたときにエージェントが見つからない | `~/.copilot/agents/`（個人用）または `.github/agents/`（プロジェクト用）に配置する |
+| `.agent.md` ではなく `.md` を使っている | ファイルがエージェントとして認識されないことがある | `python-reviewer.agent.md` のように名前を付ける |
+| エージェントのプロンプトが長すぎる | 30,000文字の上限に達することがある | エージェント定義は簡潔に保ち、詳細な指示はスキルを使う |
 
-### Troubleshooting
+### トラブルシューティング
 
-**Agent not found** - Check that the agent file exists in one of these locations:
+**エージェントが見つからない** - エージェントファイルが以下のどちらかの場所に存在するか確認してください：
 - `~/.copilot/agents/`
 - `.github/agents/`
 
-List available agents:
+利用可能なエージェントを一覧表示する：
 
 ```bash
 copilot
 > /agent
-# Shows all available agents
+# すべての利用可能なエージェントが表示される
 ```
 
-**Agent not following instructions** - Be explicit in your prompts and add more detail to agent definitions:
-- Specific frameworks/libraries with versions
-- Team conventions
-- Example code patterns
+**エージェントが指示に従わない** - プロンプトをより明確にし、エージェント定義に詳細を追加しましょう：
+- バージョンを含む特定のフレームワーク・ライブラリ
+- チームの規約
+- コードパターンの例
 
-**Custom instructions not loading** - Run `/init` in your project to set up project-specific instructions:
+**カスタム指示が読み込まれない** - プロジェクトで `/init` を実行してプロジェクト固有の指示をセットアップしましょう：
 
 ```bash
 copilot
 > /init
 ```
 
-Or check if they're disabled:
+または無効になっていないか確認する：
 ```bash
-# Don't use --no-custom-instructions if you want them loaded
-copilot  # This loads custom instructions by default
+# 指示を読み込ませたい場合は --no-custom-instructions を使わないこと
+copilot  # デフォルトでカスタム指示を読み込む
 ```
 
 </details>
 
 ---
 
-# Summary
+# まとめ
 
-## 🔑 Key Takeaways
+## 🔑 重要なポイント
 
-1. **Built-in agents**: `/plan` and `/review` are directly invoked; Explore and Task work automatically
-2. **Custom agents** are specialists defined in `.agent.md` files
-3. **Good agents** have clear expertise, standards, and output formats
-4. **Multi-agent collaboration** solves complex problems by combining expertise
-5. **Instruction files** (`.instructions.md`) encode team standards for automatic application
-6. **Consistent output** comes from well-defined agent instructions
+1. **組み込みエージェント**：`/plan` と `/review` は直接呼び出す；Explore と Task は自動的に動作する
+2. **カスタムエージェント**は `.agent.md` ファイルで定義するスペシャリスト
+3. **優れたエージェント**は明確な専門知識・標準・出力形式を持つ
+4. **マルチエージェント連携**で専門知識を組み合わせ、複雑な問題を解決する
+5. **指示ファイル**（`.instructions.md`）はチームの標準を自動適用のためにコード化する
+6. **一貫した出力**は適切に定義されたエージェントの指示から生まれる
 
-> 📋 **Quick Reference**: See the [GitHub Copilot CLI command reference](https://docs.github.com/en/copilot/reference/cli-command-reference) for a complete list of commands and shortcuts.
+> 📋 **クイックリファレンス**: コマンドとショートカットの完全なリストは [GitHub Copilot CLI コマンドリファレンス](https://docs.github.com/en/copilot/reference/cli-command-reference)をご覧ください。
 
 ---
 
-## ➡️ What's Next
+## ➡️ 次のステップ
 
-Agents change *how Copilot approaches and takes targeted actions* in your code. Next, you'll learn about **skills** - which change *what steps* it follows. Wondering how agents and skills differ? Chapter 05 covers that head-on.
+エージェントは Copilot がコードに*どう取り組み、具体的なアクションを取るか*を変えます。次は**スキル**について学びます。スキルは*どのようなステップ*を踏むかを変えるものです。エージェントとスキルの違いが気になりますか？Chapter 05 でその答えを正面から取り上げます。
 
-In **[Chapter 05: Skills System](../05-skills/README.md)**, you'll learn:
+**[Chapter 05: Skills System](../05-skills/README.md)** では、以下を学びます：
 
-- How skills auto-trigger from your prompts (no slash command needed)
-- Installing community skills
-- Creating custom skills with SKILL.md files
-- The difference between agents, skills, and MCP
-- When to use each one
+- プロンプトからスキルが自動トリガーされる仕組み（スラッシュコマンド不要）
+- コミュニティスキルのインストール
+- SKILL.md ファイルを使ったカスタムスキルの作成
+- エージェント・スキル・MCP の違い
+- それぞれの使いどころ
 
 ---
 

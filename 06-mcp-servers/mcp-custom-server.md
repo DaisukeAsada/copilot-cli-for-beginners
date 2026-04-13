@@ -1,19 +1,19 @@
-# Building a Custom MCP Server
+# カスタム MCP サーバーの構築
 
-> ⚠️ **This content is completely optional.** You can be highly productive with Copilot CLI using only the pre-built MCP servers (GitHub, filesystem, Context7). This guide is for developers who want to connect Copilot to custom internal APIs. See the [MCP for Beginners course](https://github.com/microsoft/mcp-for-beginners) for more details.
+> ⚠️ **このコンテンツは完全にオプションです。** GitHub、filesystem、Context7 などの既製 MCP サーバーだけでも Copilot CLI を十分に活用できます。このガイドは、Copilot を独自の内部 API に接続したい開発者向けです。詳しくは [MCP for Beginners course](https://github.com/microsoft/mcp-for-beginners) をご覧ください。
 >
-> **Prerequisites:**
-> - Comfortable with Python
-> - Understanding of `async`/`await` patterns
-> - `pip` available on your system (included in this dev container)
+> **前提条件：**
+> - Python に慣れていること
+> - `async`/`await` パターンを理解していること
+> - システムに `pip` が使えること（この dev container には含まれています）
 >
-> **[← Back to Chapter 06: MCP Servers](README.md)**
+> **[← Chapter 06: MCP Servers に戻る](README.md)**
 
 ---
 
-Want to connect Copilot to your own APIs? Here's how to build a simple MCP server in Python that looks up book information, tying back to the book app project you've been using throughout this course.
+Copilot を自分の API に接続したいですか？このガイドでは、このコースを通じて使ってきた book app プロジェクトをベースに、本の情報を検索するシンプルな MCP サーバーを Python で構築する方法を説明します。
 
-## Project Setup
+## プロジェクトのセットアップ
 
 ```bash
 mkdir book-lookup-mcp-server
@@ -21,11 +21,11 @@ cd book-lookup-mcp-server
 pip install mcp
 ```
 
-> 💡 **What is the `mcp` package?** It's the official Python SDK for building MCP servers. It handles the protocol details so you can focus on your tools.
+> 💡 **`mcp` パッケージとは？** MCP サーバーを構築するための公式 Python SDK です。プロトコルの詳細を自動で処理してくれるので、ツールの実装に集中できます。
 
-## Server Implementation
+## サーバーの実装
 
-Create a file called `server.py`:
+`server.py` というファイルを作成します：
 
 ```python
 # server.py
@@ -96,20 +96,20 @@ if __name__ == "__main__":
     mcp.run()
 ```
 
-**What's happening here:**
+**何が起きているか：**
 
-| Part | What It Does |
+| 部分 | 役割 |
 |------|-------------|
-| `FastMCP("book-lookup")` | Creates a server named "book-lookup" |
-| `@mcp.tool()` | Registers a function as a tool Copilot can call |
-| Type hints + docstrings | Tell Copilot what each tool does and what parameters it needs |
-| `mcp.run()` | Starts the server and listens for requests |
+| `FastMCP("book-lookup")` | "book-lookup" という名前のサーバーを作成する |
+| `@mcp.tool()` | 関数を Copilot が呼び出せるツールとして登録する |
+| 型ヒント＋docstring | 各ツールの機能と必要なパラメータを Copilot に伝える |
+| `mcp.run()` | サーバーを起動してリクエストを待ち受ける |
 
-> 💡 **Why decorators?** The `@mcp.tool()` decorator is all you need. The MCP SDK automatically reads your function's name, type hints, and docstring to generate the tool schema. No manual JSON schema needed!
+> 💡 **デコレータを使う理由は？** `@mcp.tool()` デコレータを付けるだけで OK です。MCP SDK が関数名・型ヒント・docstring を自動で読み取り、ツールのスキーマを生成します。JSON スキーマを手書きする必要はありません！
 
-## Configuration
+## 設定
 
-Add to your `~/.copilot/mcp-config.json`:
+`~/.copilot/mcp-config.json` に以下を追加します：
 
 ```json
 {
@@ -124,7 +124,7 @@ Add to your `~/.copilot/mcp-config.json`:
 }
 ```
 
-## Usage
+## 使い方
 
 ```bash
 copilot
@@ -155,16 +155,16 @@ copilot
 [Shows all books in the database with ISBNs]
 ```
 
-## Next Steps
+## 次のステップ
 
-Once you've built a basic server, you can:
+基本的なサーバーを構築したら、以下のことができます：
 
-1. **Add more tools** - Each `@mcp.tool()` function becomes a tool Copilot can call
-2. **Connect real APIs** - Replace the mock `BOOKS_DB` with actual API calls or database queries
-3. **Add authentication** - Handle API keys and tokens securely
-4. **Share your server** - Publish to PyPI so others can install it with `pip`
+1. **ツールを追加する** - `@mcp.tool()` 関数を増やすだけで、Copilot が呼び出せるツールが増えます
+2. **実際の API に接続する** - モックの `BOOKS_DB` を実際の API 呼び出しやデータベースクエリに置き換えます
+3. **認証を追加する** - API キーやトークンを安全に扱います
+4. **サーバーを共有する** - PyPI に公開して他の人が `pip` でインストールできるようにします
 
-## Resources
+## リソース
 
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
@@ -173,4 +173,4 @@ Once you've built a basic server, you can:
 
 ---
 
-**[← Back to Chapter 06: MCP Servers](README.md)**
+**[← Chapter 06: MCP Servers に戻る](README.md)**
