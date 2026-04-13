@@ -1,16 +1,16 @@
-# Additional Context Features
+# 追加コンテキスト機能
 
-> 📖 **Prerequisite**: Complete [Chapter 02: Context and Conversations](../02-context-conversations/README.md) before reading this appendix.
+> 📖 **前提**: この付録を読む前に [第2章: コンテキストと会話](../02-context-conversations/README.md) を完了してください。
 
-This appendix covers two additional context features: working with images and managing permissions across multiple directories.
+この付録では2つの追加コンテキスト機能を紹介します。画像の利用と、複数ディレクトリにまたがるパーミッション管理です。
 
 ---
 
-## Working with Images
+## 画像の利用
 
-You can include images in your conversations using the `@` syntax. Copilot can analyze screenshots, mockups, diagrams, and other visual content.
+`@` 構文を使って会話に画像を含めることができます。Copilot はスクリーンショット、モックアップ、図表などのビジュアルコンテンツを分析できます。
 
-### Basic Image Reference
+### 基本的な画像参照
 
 ```bash
 copilot
@@ -24,45 +24,45 @@ copilot
 # You can also drag and drop images or paste from clipboard
 ```
 
-### Supported Image Formats
+### 対応画像フォーマット
 
-| Format | Best For |
+| フォーマット | 最適な用途 |
 |--------|----------|
-| PNG | Screenshots, UI mockups, diagrams |
-| JPG/JPEG | Photos, complex images |
-| GIF | Simple diagrams (first frame only) |
-| WebP | Web screenshots |
+| PNG | スクリーンショット、UI モックアップ、図表 |
+| JPG/JPEG | 写真、複雑な画像 |
+| GIF | シンプルな図表（最初のフレームのみ） |
+| WebP | ウェブのスクリーンショット |
 
-### Practical Image Use Cases
+### 画像の実用的な活用例
 
-**1. UI Debugging**
+**1. UI デバッグ**
 ```bash
 > @bug-screenshot.png The button doesn't align properly. What CSS might cause this?
 ```
 
-**2. Design Implementation**
+**2. デザインの実装**
 ```bash
 > @figma-export.png Write the HTML and Tailwind CSS to match this design
 ```
 
-**3. Error Analysis**
+**3. エラーの分析**
 ```bash
 > @error-screenshot.png What does this error mean and how do I fix it?
 ```
 
-**4. Architecture Review**
+**4. アーキテクチャのレビュー**
 ```bash
 > @whiteboard-diagram.png Convert this architecture diagram to a Mermaid diagram I can put in docs
 ```
 
-**5. Before/After Comparison**
+**5. ビフォー/アフターの比較**
 ```bash
 > @before.png @after.png What changed between these two versions of the UI?
 ```
 
-### Combining Images with Code
+### 画像とコードの組み合わせ
 
-Images become even more powerful when combined with code context:
+コードコンテキストと組み合わせると、画像はさらに威力を発揮します：
 
 ```bash
 copilot
@@ -71,66 +71,66 @@ copilot
 > The header looks wrong in the screenshot. What's causing it in the code?
 ```
 
-### Image Tips
+### 画像利用のヒント
 
-- **Crop screenshots** to show only relevant portions (saves context tokens)
-- **Use high contrast** for UI elements you want analyzed
-- **Annotate if needed** - circle or highlight problem areas before uploading
-- **One image per concept** - multiple images work, but be focused
+- **スクリーンショットをトリミング**して関連部分だけを見せる（コンテキストトークンの節約になります）
+- 分析してほしい UI 要素は**コントラストを高く**する
+- **必要なら注釈を付ける** - 問題のある箇所を円で囲んだり強調してからアップロードする
+- **1つの概念につき1枚の画像** - 複数画像も使えますが、焦点を絞ることが大切です
 
 ---
 
-## Permission Patterns
+## パーミッションのパターン
 
-By default, Copilot can access files in your current directory. For files elsewhere, you need to grant access.
+デフォルトでは、Copilot は現在のディレクトリのファイルにアクセスできます。他の場所のファイルにアクセスするにはアクセス許可を付与する必要があります。
 
-### Add Directories
+### ディレクトリの追加
 
 ```bash
-# Add a directory to the allowed list
+# 許可リストにディレクトリを追加する
 copilot --add-dir /path/to/other/project
 
-# Add multiple directories
+# 複数のディレクトリを追加する
 copilot --add-dir ~/workspace --add-dir /tmp
 ```
 
-### Allow All Paths
+### すべてのパスを許可する
 
 ```bash
-# Disable path restrictions entirely (use with caution)
+# パスの制限を完全に無効にする（慎重に使用してください）
 copilot --allow-all-paths
 ```
 
-### Inside a Session
+### セッション内での操作
 
 ```bash
 copilot
 
 > /add-dir /path/to/other/project
-# Now you can reference files from that directory
+# そのディレクトリのファイルを参照できるようになります
 
 > /list-dirs
-# See all allowed directories
+# 許可されているすべてのディレクトリを確認する
 ```
 
-### For Automation
+### 自動化での利用
 
 ```bash
-# Allow all permissions for non-interactive scripts
+# 非インタラクティブなスクリプトですべてのパーミッションを許可する
 copilot -p "Review @src/" --allow-all
 
-# Or use the memorable alias
+# または覚えやすいエイリアスを使用する
 copilot -p "Review @src/" --yolo
 ```
 
-### When You Need Multi-Directory Access
+### 複数ディレクトリアクセスが必要なケース
 
-Common scenarios where you'll need these permissions:
+パーミッションが必要になる一般的なシナリオ：
 
-1. **Monorepo work** - Comparing code across packages
-2. **Cross-project refactoring** - Updating shared libraries
-3. **Documentation projects** - Referencing multiple codebases
-4. **Migration work** - Comparing old and new implementations
+1. **モノレポ作業** - パッケージをまたいだコードの比較
+2. **クロスプロジェクトのリファクタリング** - 共有ライブラリの更新
+3. **ドキュメントプロジェクト** - 複数のコードベースの参照
+4. **移行作業** - 旧実装と新実装の比較
 
 ---
 

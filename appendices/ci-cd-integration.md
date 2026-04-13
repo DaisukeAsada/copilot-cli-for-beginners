@@ -1,16 +1,16 @@
-# CI/CD Integration
+# CI/CD 連携
 
-> 📖 **Prerequisite**: Complete [Chapter 07: Putting It All Together](../07-putting-it-together/README.md) before reading this appendix.
+> 📖 **前提**: この付録を読む前に [第7章: 総まとめ](../07-putting-it-together/README.md) を完了してください。
 >
-> ⚠️ **This appendix is for teams with existing CI/CD pipelines.** If you're new to GitHub Actions or CI/CD concepts, start with the simpler pre-commit hook approach in Chapter 07's [Code Review Automation](../07-putting-it-together/README.md#workflow-3-code-review-automation-optional) section.
+> ⚠️ **この付録は既存の CI/CD パイプラインを持つチーム向けです。** GitHub Actions や CI/CD の概念が初めての方は、第7章の [コードレビューの自動化](../07-putting-it-together/README.md#workflow-3-code-review-automation-optional) セクションにある、よりシンプルな pre-commit フックの方法から始めてください。
 
-This appendix shows how to integrate GitHub Copilot CLI into your CI/CD pipelines for automated code review on pull requests.
+この付録では、GitHub Copilot CLI を CI/CD パイプラインに統合して、プルリクエストのコードレビューを自動化する方法を紹介します。
 
 ---
 
-## GitHub Actions Workflow
+## GitHub Actions ワークフロー
 
-This workflow automatically reviews changed files when a pull request is opened or updated:
+このワークフローは、プルリクエストが作成または更新されたときに変更されたファイルを自動レビューします：
 
 ```yaml
 # .github/workflows/copilot-review.yml
@@ -78,11 +78,11 @@ jobs:
 
 ---
 
-## Configuration Options
+## 設定オプション
 
-### Limiting Review Scope
+### レビュースコープの絞り込み
 
-You can focus the review on specific types of issues:
+特定の種類の問題にレビューを集中させることができます：
 
 ```yaml
 # Security-only review
@@ -92,9 +92,9 @@ copilot --allow-all -p "Security review of @$file. Check for: SQL injection, XSS
 copilot --allow-all -p "Performance review of @$file. Check for: N+1 queries, memory leaks, blocking operations." --silent
 ```
 
-### Handling Large PRs
+### 大きな PR の処理
 
-For PRs with many files, consider batching or limiting:
+ファイル数の多い PR は、バッチ処理または件数制限を検討してください：
 
 ```yaml
 # Limit to first 10 files
@@ -104,9 +104,9 @@ FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(js|ts)$' | head -1
 timeout 60 copilot --allow-all -p "Review @$file" --silent || echo "Review timed out"
 ```
 
-### Team Configuration
+### チーム設定
 
-For consistent reviews across your team, create a shared configuration:
+チーム全体で一貫したレビューを行うために、共有設定を作成します：
 
 ```json
 // .copilot/config.json (committed to repo)
@@ -121,9 +121,9 @@ For consistent reviews across your team, create a shared configuration:
 
 ---
 
-## Alternative: PR Review Bot
+## 代替案: PR レビューボット
 
-For more sophisticated review workflows, consider using the GitHub Copilot cloud agent:
+より高度なレビューワークフローには、GitHub Copilot のクラウドエージェントの使用を検討してください：
 
 ```yaml
 # .github/workflows/copilot-agent-review.yml
@@ -151,21 +151,21 @@ jobs:
 
 ---
 
-## Best Practices for CI/CD Integration
+## CI/CD 連携のベストプラクティス
 
-1. **Use `--silent` flag** - Suppresses progress output for cleaner logs
-2. **Set timeouts** - Prevent hung reviews from blocking your pipeline
-3. **Filter file types** - Only review relevant files (skip generated code, dependencies)
-4. **Rate limit awareness** - Space out reviews for large PRs
-5. **Fail gracefully** - Don't block merges on review failures; log and continue
+1. **`--silent` フラグを使用する** - ログをきれいに保つためにプログレス出力を抑制する
+2. **タイムアウトを設定する** - レビューのハングアップがパイプラインをブロックしないようにする
+3. **ファイルタイプを絞り込む** - 関連ファイルのみをレビューする（生成コードや依存関係はスキップ）
+4. **レート制限を意識する** - 大きな PR ではレビューの間隔を空ける
+5. **適切に失敗処理する** - レビューの失敗でマージをブロックしない。ログに記録して続行する
 
 ---
 
-## Troubleshooting
+## トラブルシューティング
 
-### "Authentication failed" in CI
+### CI で「認証に失敗しました」
 
-Ensure your workflow has the correct permissions:
+ワークフローに正しいパーミッションが設定されているか確認してください：
 
 ```yaml
 permissions:
@@ -174,17 +174,17 @@ permissions:
   issues: write
 ```
 
-### Reviews timing out
+### レビューがタイムアウトする
 
-Increase timeout or reduce scope:
+タイムアウトを延長するか、スコープを絞り込んでください：
 
 ```bash
 timeout 120 copilot --allow-all -p "Quick review of @$file - critical issues only" --silent
 ```
 
-### Token limits in large files
+### 大きなファイルでのトークン上限
 
-Skip very large files:
+非常に大きなファイルはスキップしてください：
 
 ```bash
 if [ $(wc -l < "$file") -lt 500 ]; then
