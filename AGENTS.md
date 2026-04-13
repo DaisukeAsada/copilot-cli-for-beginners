@@ -37,3 +37,8 @@ Beginner-friendly course teaching GitHub Copilot CLI. Educational content, not s
 ```bash
 npm install && npm run release
 ```
+
+## Language
+
+- **チャットの回答は必ず日本語で行う** — すべてのチャット応答・説明・コメントは日本語で記述すること
+- コード・コマンド・ファイルパスはそのまま英語で記載してよい

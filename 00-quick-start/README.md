@@ -1,71 +1,71 @@
 ![Chapter 00: Quick Start](images/chapter-header.png)
 
-Welcome! In this chapter, you'll get GitHub Copilot CLI (Command Line Interface) installed, signed in with your GitHub account, and verified that everything works. This is a quick setup chapter. Once you're up and running, the real demos start in Chapter 01!
+ようこそ！この章では、GitHub Copilot CLI (Command Line Interface) のインストール、GitHubアカウントでのサインイン、そして動作確認を行います。セットアップのための章です。準備が整ったら、Chapter 01 からいよいよ本番のデモが始まります！
 
-## 🎯 Learning Objectives
+## 🎯 学習目標
 
-By the end of this chapter, you'll have:
+この章を終えると、以下が完了しています：
 
-- Installed GitHub Copilot CLI
-- Signed in with your GitHub account
-- Verified it works with a simple test
+- GitHub Copilot CLI のインストール
+- GitHub アカウントでのサインイン
+- 簡単なテストによる動作確認
 
-> ⏱️ **Estimated Time**: ~10 minutes (5 min reading + 5 min hands-on)
-
----
-
-## ✅ Prerequisites
-
-- **GitHub Account** with Copilot access. [See subscription options](https://github.com/features/copilot/plans). Students/Teachers can access Copilot Pro for [free via GitHub Education](https://education.github.com/pack).
-- **Terminal basics**: Comfortable with commands like `cd` and `ls`
-
-### What "Copilot Access" Means
-
-GitHub Copilot CLI requires an active Copilot subscription. You can check your status at [github.com/settings/copilot](https://github.com/settings/copilot). You should see one of:
-
-- **Copilot Individual** - Personal subscription
-- **Copilot Business** - Through your organization
-- **Copilot Enterprise** - Through your enterprise
-- **GitHub Education** - Free for verified students/teachers
-
-If you see "You don't have access to GitHub Copilot," you'll need to use the free option, subscribe to a plan, or join an organization that provides access.
+> ⏱️ **所要時間の目安**：約10分（読む：5分 + 実践：5分）
 
 ---
 
-## Installation
+## ✅ 前提条件
 
-> ⏱️ **Time estimate**: Installation takes 2-5 minutes. Authentication adds another 1-2 minutes.
+- **Copilot アクセス付きの GitHub アカウント**。[サブスクリプションオプションを見る](https://github.com/features/copilot/plans)。学生・教員の方は [GitHub Education](https://education.github.com/pack) を通じて Copilot Pro を無料で利用できます。
+- **ターミナルの基本操作**：`cd` や `ls` などのコマンドに慣れていること
 
-### GitHub Codespaces (Zero Setup)
+### 「Copilot アクセス」とは
 
-If you don't want to install any of the prerequisites you can use GitHub Codespaces, which has the GitHub Copilot CLI ready to go (you'll need to sign in), and pre-installs Python and pytest.
+GitHub Copilot CLI を使用するには、有効な Copilot サブスクリプションが必要です。[github.com/settings/copilot](https://github.com/settings/copilot) でご自身のステータスを確認できます。次のいずれかが表示されるはずです：
 
-1. [Fork this repository](https://github.com/github/copilot-cli-for-beginners/fork) to your GitHub account
-2. Select **Code** > **Codespaces** > **Create codespace on main**
-3. Wait a few minutes for the container to build
-4. You're ready to go! The terminal will open automatically in the Codespace environment.
+- **Copilot Individual** - 個人サブスクリプション
+- **Copilot Business** - 組織経由
+- **Copilot Enterprise** - エンタープライズ経由
+- **GitHub Education** - 認定学生・教員向け無料プラン
 
-> 💡 **Verify in Codespace**: Run `cd samples/book-app-project && python book_app.py help` to confirm Python and the sample app are working.
+「You don't have access to GitHub Copilot」と表示された場合は、無料オプションの利用、プランへの加入、またはアクセスを提供している組織への参加が必要です。
 
-### Local Installation
+---
 
-Follow these steps if you'd like to run Copilot CLI on your local machine with the course samples.
+## インストール
 
-1. Clone the repo to get the course samples on your machine:
+> ⏱️ **時間の目安**：インストールに2〜5分、認証にさらに1〜2分かかります。
+
+### GitHub Codespaces（セットアップ不要）
+
+前提条件をインストールしたくない場合は GitHub Codespaces を使用できます。GitHub Copilot CLI がすぐに使える状態で用意されており（サインインは必要）、Python と pytest もプリインストールされています。
+
+1. このリポジトリを [フォーク](https://github.com/github/copilot-cli-for-beginners/fork) して自分の GitHub アカウントに追加する
+2. **Code** > **Codespaces** > **Create codespace on main** を選択
+3. コンテナのビルドが完了するまで数分待つ
+4. 準備完了！Codespace 環境でターミナルが自動的に開きます。
+
+> 💡 **Codespace での確認**：`cd samples/book-app-project && python book_app.py help` を実行して、Python とサンプルアプリが正常に動作することを確認しましょう。
+
+### ローカルへのインストール
+
+ローカルマシンで Copilot CLI とコースのサンプルを実行したい場合は、以下の手順に従ってください。
+
+1. リポジトリをクローンして、コースのサンプルをマシンに取得する：
 
     ```bash
     git clone https://github.com/github/copilot-cli-for-beginners
     cd copilot-cli-for-beginners
     ```
 
-2. Install Copilot CLI using one of the following options.
+2. 以下のいずれかの方法で Copilot CLI をインストールする。
 
-    > 💡 **Not sure which to pick?** Use `npm` if you have Node.js installed. Otherwise, choose the option that matches your system.
+    > 💡 **どれを選べばいい？** Node.js がインストール済みなら `npm` を使うのが手軽です。それ以外は、ご利用のシステムに合ったオプションを選んでください。
 
-    ### All Platforms (npm)
+    ### 全プラットフォーム (npm)
 
     ```bash
-    # If you have Node.js installed, this is a quick way to get the CLI
+    # Node.js がインストールされていれば、これが手っ取り早い方法です
     npm install -g @github/copilot
     ```
 
@@ -81,7 +81,7 @@ Follow these steps if you'd like to run Copilot CLI on your local machine with t
     winget install GitHub.Copilot
     ```
 
-    ### macOS/Linux (Install Script)
+    ### macOS/Linux (インストールスクリプト)
 
     ```bash
     curl -fsSL https://gh.io/copilot-install | bash
@@ -89,51 +89,51 @@ Follow these steps if you'd like to run Copilot CLI on your local machine with t
 
 ---
 
-## Authentication
+## 認証
 
-Open a terminal window at the root of the `copilot-cli-for-beginners` repository, start the CLI and allow access to the folder.
+`copilot-cli-for-beginners` リポジトリのルートでターミナルを開き、CLI を起動してフォルダへのアクセスを許可します。
 
 ```bash
 copilot
 ```
 
-You'll be asked to trust the folder containing the repository (if you haven't already). You can trust it one time or across all future sessions.
+リポジトリを含むフォルダを信頼するかどうか確認が求められます（まだ信頼していない場合）。今回のみ信頼するか、今後のセッションでも継続して信頼するかを選択できます。
 
 <img src="images/copilot-trust.png" alt="Trusting files in a folder with the Copilot CLI" width="800"/>
 
-After trusting the folder, you can sign in with your GitHub account.
+フォルダを信頼した後、GitHub アカウントでサインインできます。
 
 ```
 > /login
 ```
 
-**What happens next:**
+**次に起こること：**
 
-1. Copilot CLI displays a one-time code (like `ABCD-1234`)
-2. Your browser opens to GitHub's device authorization page. Sign in to GitHub if you haven't already.
-3. Enter the code when prompted
-4. Select "Authorize" to grant GitHub Copilot CLI access
-5. Return to your terminal - you're now signed in!
+1. Copilot CLI にワンタイムコード（例：`ABCD-1234`）が表示される
+2. GitHub のデバイス認証ページがブラウザで開く。まだサインインしていない場合は GitHub にサインインする
+3. 表示されたコードを入力する
+4. 「Authorize」を選択して GitHub Copilot CLI へのアクセスを許可する
+5. ターミナルに戻ると、サインイン完了！
 
 <img src="images/auth-device-flow.png" alt="Device Authorization Flow - showing the 5-step process from terminal login to signed-in confirmation" width="800"/>
 
-*The device authorization flow: your terminal generates a code, you verify it in the browser, and Copilot CLI is authenticated.*
+*デバイス認証フロー：ターミナルでコードを生成し、ブラウザで確認すると、Copilot CLI の認証が完了します。*
 
-**Tip**: The sign-in persists across sessions. You only need to do this once unless your token expires or you explicitly sign out.
+**ヒント**：サインイン状態はセッションをまたいで維持されます。トークンが期限切れになるか明示的にサインアウトしない限り、再認証は不要です。
 
 ---
 
-## Verify It Works
+## 動作確認
 
-### Step 1: Test Copilot CLI
+### ステップ 1：Copilot CLI をテストする
 
-Now that you're signed in, let's verify that Copilot CLI is working for you. In the terminal, start the CLI if you haven't already:
+サインインできたら、Copilot CLI が正常に動作しているか確認しましょう。まだ起動していない場合はターミナルで CLI を起動し、次のように入力してみてください：
 
 ```bash
 > Say hello and tell me what you can help with
 ```
 
-After you receive a response, you can exit the CLI:
+応答を受け取ったら、CLI を終了できます：
 
 ```bash
 > /exit
@@ -142,46 +142,46 @@ After you receive a response, you can exit the CLI:
 ---
 
 <details>
-<summary>🎬 See it in action!</summary>
+<summary>🎬 実際の動作を見てみよう！</summary>
 
 ![Hello Demo](images/hello-demo.gif)
 
-*Demo output varies. Your model, tools, and responses will differ from what's shown here.*
+*デモの出力は環境によって異なります。使用するモデル、ツール、応答内容はここに示されたものと異なる場合があります。*
 
 </details>
 
 ---
 
-**Expected output**: A friendly response listing Copilot CLI's capabilities.
+**期待される出力**：Copilot CLI の機能を紹介するフレンドリーな応答。
 
-### Step 2: Run the Sample Book App
+### ステップ 2：サンプルのBook Appを実行する
 
-The course provides a sample app that you'll explore and improve throughout the course using the CLI *(You can see the code for this in /samples/book-app-project)*. Check that the *Python book collection terminal app* works before you get started. Run `python` or `python3` depending on your system.
+このコースには、CLI を使って探索・改善していくサンプルアプリが用意されています *(コードは /samples/book-app-project にあります)*。始める前に *Python 製の本コレクション管理ターミナルアプリ* が正常に動作することを確認しておきましょう。システムに応じて `python` または `python3` を使用してください。
 
-> **Note:** The primary examples shown throughout the course use Python (`samples/book-app-project`) so you'll need to have [Python 3.10+](https://www.python.org/downloads/) available on your local machine if you chose that option (the Codespace already has it installed). JavaScript (`samples/book-app-project-js`) and C# (`samples/book-app-project-cs`) versions are also available if you prefer to work with those languages. Each sample has a README with instructions for running the app in that language.
+> **注意：** コース全体で主に使用するのは Python 版（`samples/book-app-project`）です。ローカルマシンを選んだ場合は [Python 3.10+](https://www.python.org/downloads/) が必要です（Codespace にはすでにインストール済み）。JavaScript 版（`samples/book-app-project-js`）と C# 版（`samples/book-app-project-cs`）も用意されているので、好みの言語を選んでください。各サンプルにはその言語でのアプリ実行手順を記載した README があります。
 
 ```bash
 cd samples/book-app-project
 python book_app.py list
 ```
 
-**Expected output**: A list of 5 books including "The Hobbit", "1984", and "Dune".
+**期待される出力**：「The Hobbit」「1984」「Dune」などを含む5冊の本のリスト。
 
-### Step 3: Try Copilot CLI with the Book App
+### ステップ 3：Book App で Copilot CLI を試す
 
-Navigate back to the repository root first (if you ran Step 2):
+ステップ 2 を実行した場合は、まずリポジトリのルートに戻ります：
 
 ```bash
-cd ../..   # Back to the repository root if needed
+cd ../..   # 必要に応じてリポジトリのルートに戻る
 copilot 
 > What does @samples/book-app-project/book_app.py do?
 ```
 
-**Expected output**: A summary of the book app's main functions and commands.
+**期待される出力**：Book App の主要な機能とコマンドの概要。
 
-If you see an error, check the [troubleshooting section](#troubleshooting) below.
+エラーが表示された場合は、下の[トラブルシューティング](#トラブルシューティング)を確認してください。
 
-Once you're done you can exit the Copilot CLI:
+完了したら Copilot CLI を終了できます：
 
 ```bash
 > /exit
@@ -189,77 +189,77 @@ Once you're done you can exit the Copilot CLI:
 
 ---
 
-## ✅ You're Ready!
+## ✅ 準備完了！
 
-That's it for installation. The real fun starts in Chapter 01, where you'll:
+インストールはここまでです。Chapter 01 からいよいよ本番が始まります：
 
-- Watch AI review the book app and find code quality issues instantly
-- Learn three different ways to use Copilot CLI
-- Generate working code from plain English
+- AI が Book App をレビューし、コード品質の問題を即座に発見する様子を見る
+- Copilot CLI の3つの使い方を学ぶ
+- 平易な日本語（自然言語）から動くコードを生成する
 
-**[Continue to Chapter 01: First Steps →](../01-setup-and-first-steps/README.md)**
+**[Chapter 01: First Steps へ進む →](../01-setup-and-first-steps/README.md)**
 
 ---
 
-## Troubleshooting
+## トラブルシューティング
 
 ### "copilot: command not found"
 
-The CLI isn't installed. Try a different installation method:
+CLI がインストールされていません。別のインストール方法を試してみてください：
 
 ```bash
-# If brew failed, try npm:
+# brew が失敗した場合は npm を試す：
 npm install -g @github/copilot
 
-# Or the install script:
+# またはインストールスクリプト：
 curl -fsSL https://gh.io/copilot-install | bash
 ```
 
 ### "You don't have access to GitHub Copilot"
 
-1. Verify you have a Copilot subscription at [github.com/settings/copilot](https://github.com/settings/copilot)
-2. Check that your organization permits CLI access if using a work account
+1. [github.com/settings/copilot](https://github.com/settings/copilot) で Copilot サブスクリプションを確認する
+2. 会社のアカウントを使用している場合は、組織が CLI アクセスを許可しているか確認する
 
 ### "Authentication failed"
 
-Re-authenticate:
+再認証を行ってください：
 
 ```bash
 copilot
 > /login
 ```
 
-### Browser doesn't open automatically
+### ブラウザが自動的に開かない
 
-Manually visit [github.com/login/device](https://github.com/login/device) and enter the code shown in your terminal.
+[github.com/login/device](https://github.com/login/device) を手動で開き、ターミナルに表示されたコードを入力してください。
 
-### Token expired
+### トークンが期限切れ
 
-Simply run `/login` again:
+`/login` を再度実行するだけです：
 
 ```bash
 copilot
 > /login
 ```
 
-### Still stuck?
+### それでも解決しない場合
 
-- Check the [GitHub Copilot CLI documentation](https://docs.github.com/copilot/concepts/agents/about-copilot-cli)
-- Search [GitHub Issues](https://github.com/github/copilot-cli/issues)
-
----
-
-## 🔑 Key Takeaways
-
-1. **A GitHub Codespace is a quick way to get started** - Python, pytest, and GitHub Copilot CLI are all pre-installed so you can jump right into the demos
-2. **Multiple installation methods** - Choose what works for your system (Homebrew, WinGet, npm, or install script)
-3. **One-time authentication** - Login persists until token expires
-4. **The book app works** - You'll use `samples/book-app-project` throughout the entire course
-
-> 📚 **Official Documentation**: [Install Copilot CLI](https://docs.github.com/copilot/how-tos/copilot-cli/cli-getting-started) for installation options and requirements.
-
-> 📋 **Quick Reference**: See the [GitHub Copilot CLI command reference](https://docs.github.com/en/copilot/reference/cli-command-reference) for a complete list of commands and shortcuts.
+- [GitHub Copilot CLI のドキュメント](https://docs.github.com/copilot/concepts/agents/about-copilot-cli) を確認する
+- [GitHub Issues](https://github.com/github/copilot-cli/issues) で検索する
 
 ---
 
-**[Continue to Chapter 01: First Steps →](../01-setup-and-first-steps/README.md)**
+## 🔑 まとめ
+
+1. **GitHub Codespace はすぐに始める最も手軽な方法** - Python、pytest、GitHub Copilot CLI がすべてプリインストールされているので、すぐにデモに入れます
+2. **複数のインストール方法** - Homebrew、WinGet、npm、インストールスクリプトの中からシステムに合ったものを選んでください
+3. **認証は一度だけ** - トークンが期限切れになるまでサインイン状態が続きます
+4. **Book App は動いている** - コース全体を通じて `samples/book-app-project` を使用します
+
+> 📚 **公式ドキュメント**：[Copilot CLI をインストールする](https://docs.github.com/copilot/how-tos/copilot-cli/cli-getting-started)（インストールオプションと要件）
+
+> 📋 **クイックリファレンス**：[GitHub Copilot CLI コマンドリファレンス](https://docs.github.com/en/copilot/reference/cli-command-reference)でコマンドとショートカットの完全なリストを確認できます。
+
+---
+
+**[Chapter 01: First Steps へ進む →](../01-setup-and-first-steps/README.md)**
